@@ -25,6 +25,11 @@ function shortAddress(address) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
+function fetchedAtLabel(value) {
+  if (!value) return "unknown time";
+  return value.replace("T", " ").replace(/\.\d{3}Z$/, " UTC");
+}
+
 function TokenIcon({ token }) {
   const [failed, setFailed] = useState(false);
   if (!token.icon || failed) {
@@ -226,7 +231,7 @@ export default function MemecoinMarket({ initialData }) {
             RadarDex
           </a>
           {" · "}
-          fetched {new Date(data.fetchedAt).toLocaleString("en-US")}
+          fetched {fetchedAtLabel(data.fetchedAt)}
           {" · "}
           values are third-party, unverified testnet/community market data.
         </div>
