@@ -10,7 +10,8 @@ Not affiliated with Circle.
 | --- | --- |
 | `/` | Dashboard — network status tiles, tool cards, top pairs, latest updates, ecosystem spotlight |
 | `/screener` | Token screener: sortable columns, category/liquidity filters, risk flags, sparklines |
-| `/bridge` | Testnet USDC planner across Arc Testnet, Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia and Solana Devnet |
+| `/memecoins` | Live community-token market data from the API used by RadarDex |
+| `/bridge` | Fail-closed Arc mainnet bridge status with official Arc and Circle sources |
 | `/updates` | Mainnet watch — dated, source-linked Arc milestones with tag filters |
 | `/ecosystem` | Directory of projects building on Arc, with RadarDex featured |
 | `/network` | Chain IDs, RPC/explorer/faucet, add-to-wallet, mainnet status |
@@ -29,7 +30,7 @@ Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_I
 
 ## Stack
 
-Next.js 15 (App Router, JavaScript), RainbowKit 2 + wagmi 2 + viem, plain CSS for everything else — no UI or chart libraries. Logos (Arc, USDC, RadarDex) are inline SVG in `components/Logos.jsx`; `app/icon.svg` is the favicon.
+Next.js 15 (App Router, JavaScript), RainbowKit 2 + wagmi 2 + viem, plain CSS for everything else — no UI or chart libraries. The supplied Arc and USDC images live in `public/brand`; official ecosystem marks are stored locally in `public/ecosystem`.
 
 ## Wallet + websocket
 
@@ -37,20 +38,22 @@ Next.js 15 (App Router, JavaScript), RainbowKit 2 + wagmi 2 + viem, plain CSS fo
 - [`lib/wagmi.js`](lib/wagmi.js) builds the wagmi config. Arc's transport is `fallback([webSocket(...), http(...)])`, so RPC reads ride the socket and drop to HTTP if it can't be opened.
 - [`components/Providers.jsx`](components/Providers.jsx) wraps the app in `WagmiProvider` → `QueryClientProvider` → `RainbowKitProvider` (dark theme, USDC-blue accent, Arc as `initialChain`).
 - [`lib/useArcLive.js`](lib/useArcLive.js) is the live feed: `watchBlocks` over the websocket (`eth_subscribe` → `newHeads`), with a one-shot fallback to 2s HTTP polling if the socket errors. It derives block interval, tx/s, gas-used ratio and gas price, and reports which transport is actually in use — the UI badge says `live · websocket` or `live · polling`, never both.
-- `<ConnectButton />` sits in the header and on the bridge; `/network` uses wagmi's `switchChain`, which asks the wallet to add Arc when it doesn't know the network.
-- Balances shown on the bridge are read-only: native USDC on Arc, ERC-20 USDC on Ethereum/Base/Arbitrum via the addresses in `lib/chains.js`.
+- `<ConnectButton />` sits in the header; `/network` uses wagmi's `switchChain`, which asks the wallet to add Arc when it doesn't know the network.
+- The bridge page has no wallet or transaction action until Arc publishes mainnet parameters and Circle lists a production CCTP route.
 
 ## Data
 
-All content lives in [`lib/data.js`](lib/data.js):
+Static reference content lives in [`lib/data.js`](lib/data.js); the RadarDex feed is fetched at runtime:
 
 - `ARC_NETWORKS` — testnet parameters (chain ID 5042002, `rpc.testnet.arc.network`, `testnet.arcscan.app`) and mainnet status. Public Testnet is the current active network; mainnet phases remain upcoming.
-- `CHAINS` / `ROUTERS` / `quote()` — the testnet-only bridge model. It keeps Arc Testnet paired with Sepolia/Devnet destinations supported by Circle CCTP and never mixes testnet with mainnet funds.
+- `lib/radardex.js` — bounded, normalized access to the live token feed used by radardex.io.
+- `/api/radardex/memecoins` — same-origin proxy with a timeout, schema checks and an explicit unavailable state.
 - `TOKENS` — **sample** screener rows. Arc mainnet has no public price feed yet, so these exist to exercise the UI. Replace with a fetch against an Arc indexer or the RadarDex API keeping this shape: `{ symbol, name, kind, price, change24h, volume24h, liquidity, fdv, holders, ageHours, audit, pool, spark[] }`.
 - `ECOSYSTEM` — project directory. `UPDATES` — dated entries, each with a source link.
 
 ## Caveats worth keeping
 
-- The bridge **plans testnet routes only**. It never holds funds, builds calldata, or signs anything; the review action links to Circle's supported-chain documentation. Everything wallet-related is read-only — the app reads addresses and balances and can ask the wallet to switch/add a network, which the wallet still prompts on. No `sendTransaction` or `signMessage` call exists anywhere in the codebase.
+- The bridge is **Coming Soon** and read-only. It never holds funds, builds calldata, asks for a signature or displays simulated route quotes.
+- RadarDex rows are live third-party data. Names, symbols, icons, prices and liquidity are not treated as verified; the UI warns users to verify contracts and never substitutes sample values when the upstream feed is unavailable.
 - Arc's official wallet setup specifies 18 decimals for native USDC. Some wallets may still label the gas token as ETH even though the underlying token is USDC.
 - Arc mainnet parameters are not public. Treat any claimed mainnet endpoint or bridge as unsafe until the official Arc documentation publishes it.

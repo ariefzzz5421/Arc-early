@@ -6,11 +6,11 @@ import Footer from "@/components/Footer";
 
 export const metadata = {
   title: {
-    default: "Arc Early — screener, bridge & mainnet watch for Circle's Arc L1",
+    default: "Arc Early — live memecoins, ecosystem & Arc mainnet watch",
     template: "%s · Arc Early",
   },
   description:
-    "Early tooling for Circle's Arc blockchain: sample token screener, testnet-safe USDC route planner, live Arc Testnet stream, ecosystem directory and network updates.",
+    "Live RadarDex community-token data, fail-closed Arc mainnet bridge status, official ecosystem directory, testnet stream and sourced network updates.",
 };
 
 export default function RootLayout({ children }) {

@@ -1,69 +1,127 @@
-import Bridge from "@/components/Bridge";
-import { PageHead } from "@/components/ui";
-import { ROUTERS } from "@/lib/data";
+import { ArcLogo, UsdcLogo } from "@/components/Logos";
+import { Notice, PageHead, Stat } from "@/components/ui";
 
 export const metadata = {
-  title: "Bridge",
+  title: "Mainnet Bridge Status",
   description:
-    "Plan testnet USDC routes between Arc Testnet, Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia and Solana Devnet using Circle CCTP.",
+    "Arc mainnet bridge readiness based on Arc and Circle's official deployment and CCTP documentation.",
 };
+
+const OFFICIAL_DETAILS = [
+  {
+    label: "Current public network",
+    value: "Public Testnet",
+    note: "Live and permissionless · chain ID 5042002",
+    source: "https://docs.arc.io/arc/concepts/deployment-model",
+  },
+  {
+    label: "Private mainnet",
+    value: "Upcoming",
+    note: "Production network for real-value flows",
+    source: "https://docs.arc.io/arc/concepts/deployment-model",
+  },
+  {
+    label: "Public mainnet",
+    value: "Upcoming",
+    note: "Public RPC, chain ID and explorer not published",
+    source: "https://docs.arc.io/arc/concepts/deployment-model",
+  },
+  {
+    label: "Canonical USDC route",
+    value: "CCTP",
+    note: "Burn and mint; Arc Testnet is domain 26",
+    source: "https://docs.arc.io/integrate/infrastructure/bridges",
+  },
+];
 
 export default function BridgePage() {
   return (
     <div className="shell">
       <PageHead
-        eyebrow="Tools"
-        title="Testnet bridge planner"
+        eyebrow="Mainnet readiness"
+        title="Arc mainnet bridge"
         actions={[
-          <span key="1" className="badge">Ethereum Sepolia</span>,
-          <span key="2" className="badge">Base Sepolia</span>,
-          <span key="3" className="badge">Arbitrum Sepolia</span>,
-          <span key="4" className="badge">Solana Devnet</span>,
+          <span className="badge pending" key="status">
+            Coming soon
+          </span>,
+          <span className="badge info" key="source">
+            Official Arc status
+          </span>,
         ]}
       >
-        Pick a source and destination to inspect a testnet-safe CCTP path, estimated gas and finality. Testnet USDC has
-        no financial value. This planner never holds funds, builds calldata or signs transactions.
+        Arc Early will only enable a production bridge after Arc publishes mainnet network parameters and an official
+        router exposes a supported route. No simulated quotes, wallet prompts or transaction buttons are shown before
+        that point.
       </PageHead>
 
-      <Bridge />
+      <section className="bridge-coming card">
+        <div className="bridge-coming-mark">
+          <ArcLogo size={96} />
+          <span className="bridge-line" aria-hidden="true" />
+          <UsdcLogo size={68} />
+        </div>
+        <div>
+          <div className="eyebrow">Status checked against official docs</div>
+          <h2>Mainnet bridge is coming soon</h2>
+          <p className="muted">
+            Arc&apos;s official deployment model currently lists Public Testnet as live and both Private Mainnet and
+            Public Mainnet as upcoming. Circle&apos;s CCTP matrix lists Arc Testnet—not Arc Mainnet—as a supported
+            domain. That means there is no official public mainnet router for this app to connect to yet.
+          </p>
+          <div className="pill-row">
+            <a
+              className="btn primary"
+              href="https://docs.arc.io/arc/concepts/deployment-model"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Check Arc deployment status ↗
+            </a>
+            <a
+              className="btn"
+              href="https://developers.circle.com/cctp/concepts/supported-chains-and-domains"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Check CCTP support ↗
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid stats bridge-stats">
+        <Stat label="Bridge state" value="Coming soon" sub="waiting for official mainnet route" kind="pending" />
+        <Stat label="Mainnet parameters" value="Not public" sub="no confirmed chain ID or RPC" kind="pending" />
+        <Stat label="Live CCTP domain" value="26" sub="Arc Testnet only" kind="info" />
+        <Stat label="Mainnet asset safety" value="Disabled" sub="no wallet transaction can be started" kind="good" />
+      </div>
 
       <section className="section">
         <div className="section-head">
           <div>
-            <div className="eyebrow">Reference</div>
-            <h2>How the supported path works</h2>
+            <div className="eyebrow">Latest official details</div>
+            <h2>What is available today</h2>
           </div>
+          <span className="badge">Reviewed July 27, 2026</span>
         </div>
         <div className="grid eco-grid">
-          {Object.values(ROUTERS).map((r) => (
-            <a key={r.key} className="card eco-card" href={r.link} target="_blank" rel="noreferrer">
-              <div className="eco-top">
-                <span className="eco-logo" style={{ background: "rgba(39,117,202,0.14)" }}>
-                  {r.name.slice(0, 1)}
-                </span>
-                <div>
-                  <h3>{r.name}</h3>
-                  <div className="faint" style={{ fontSize: 12 }}>{r.kind}</div>
-                </div>
-              </div>
-              <p>{r.blurb}</p>
-              <div className="tags">
-                <span className="badge">{r.bps} bps</span>
-                <span className="badge">{r.trust}</span>
-              </div>
+          {OFFICIAL_DETAILS.map((detail) => (
+            <a className="card eco-card" href={detail.source} target="_blank" rel="noreferrer" key={detail.label}>
+              <div className="eyebrow">{detail.label}</div>
+              <h3>{detail.value}</h3>
+              <p>{detail.note}</p>
+              <span className="badge info">Official source ↗</span>
             </a>
           ))}
         </div>
       </section>
 
-      <section className="card card-pad" style={{ marginBottom: 30 }}>
-        <h3>Why every chain here is a test network</h3>
-        <p className="muted" style={{ fontSize: 13.5, marginBottom: 0 }}>
-          Arc&apos;s active public network is Testnet, so pairing it with Ethereum, Base, Arbitrum or Solana mainnet would
-          cross network environments and cannot produce a valid transfer. The planner uses Sepolia and Devnet
-          counterparts supported by Circle instead.
-        </p>
-      </section>
+      <Notice>
+        <b>Do not deposit real funds yet.</b> A site claiming an Arc mainnet bridge before Arc publishes matching chain
+        parameters and contracts may be unsafe. This page intentionally fails closed and will remain read-only.
+      </Notice>
+
+      <div style={{ height: 30 }} />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { ECOSYSTEM, ECO_CATEGORIES } from "@/lib/data";
-import { RadarDexLogo } from "./Logos";
 
 export default function EcosystemGrid() {
   const [cat, setCat] = useState("All");
@@ -43,16 +43,9 @@ export default function EcosystemGrid() {
         {rows.map((p) => (
           <a key={p.slug} className="card eco-card" href={p.url} target="_blank" rel="noreferrer">
             <div className="eco-top">
-              {p.slug === "radardex" ? (
-                <RadarDexLogo size={38} />
-              ) : (
-                <span
-                  className="eco-logo"
-                  style={{ background: `${p.color}22`, color: p.color, borderColor: `${p.color}55` }}
-                >
-                  {p.name.slice(0, 2).toUpperCase()}
-                </span>
-              )}
+              <span className="eco-logo" style={{ background: `${p.color}18`, borderColor: `${p.color}55` }}>
+                <Image src={p.logo} alt={`${p.name} logo`} width={38} height={38} sizes="38px" />
+              </span>
               <div style={{ minWidth: 0 }}>
                 <h3>{p.name}</h3>
                 <div className="faint" style={{ fontSize: 12 }}>{p.category}</div>
@@ -60,12 +53,21 @@ export default function EcosystemGrid() {
               {p.featured && <span className="badge info" style={{ marginLeft: "auto" }}>Featured</span>}
             </div>
             <p>{p.blurb}</p>
+            <div className="eco-stats">
+              {p.stats.map(([label, value]) => (
+                <div key={label}>
+                  <span>{label}</span>
+                  <strong>{value}</strong>
+                </div>
+              ))}
+            </div>
             <div className="tags">
               {p.tags.map((t) => (
                 <span key={t} className="badge">
                   {t}
                 </span>
               ))}
+              <span className="badge info">{p.sourceLabel} ↗</span>
             </div>
           </a>
         ))}

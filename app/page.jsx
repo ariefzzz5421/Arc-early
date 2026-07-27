@@ -3,20 +3,20 @@ import { ArcLogo, UsdcLogo, RadarDexLogo } from "@/components/Logos";
 import { Stat, Notice } from "@/components/ui";
 import Screener from "@/components/Screener";
 import LiveNetwork from "@/components/LiveNetwork";
-import { NETWORK_STATS, UPDATES, ECOSYSTEM, ARC_NETWORKS, CHAINS } from "@/lib/data";
+import { NETWORK_STATS, UPDATES, ECOSYSTEM, ARC_NETWORKS } from "@/lib/data";
 
 const FEATURES = [
   {
-    href: "/screener",
-    icon: "◎",
-    title: "Screener",
-    body: "Sort every Arc pair by volume, liquidity, FDV, holders and age — with thin-liquidity and fresh-launch flags surfaced up front.",
+    href: "/memecoins",
+    icon: "◉",
+    title: "Live memecoins",
+    body: "Real RadarDex market rows with price, liquidity, volume, transactions, traders and contract links.",
   },
   {
     href: "/bridge",
     icon: "⇄",
-    title: "Testnet bridge planner",
-    body: "Plan CCTP routes across Arc Testnet, Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia and Solana Devnet without mixing testnet and mainnet funds.",
+    title: "Mainnet bridge status",
+    body: "A fail-closed status page that stays read-only until Arc publishes mainnet parameters and a supported production route.",
   },
   {
     href: "/updates",
@@ -28,7 +28,7 @@ const FEATURES = [
     href: "/ecosystem",
     icon: "⬡",
     title: "Ecosystem",
-    body: "DEXs, launchpads, payment rails, privacy infra and NFT projects building on Arc — including RadarDex.",
+    body: "Official project logos, concise product summaries and source-backed Arc network statistics.",
   },
   {
     href: "/network",
@@ -40,7 +40,7 @@ const FEATURES = [
     href: "https://radardex.io/",
     icon: "◐",
     title: "RadarDex ↗",
-    body: "Scan, launch and trade Arc tokens. Launches go straight into Uniswap v3 — no bonding curve, no migration.",
+    body: "Open the third-party source used by the live memecoin route and verify token contracts directly.",
     external: true,
   },
 ];
@@ -67,16 +67,15 @@ export default function DashboardPage() {
               Get early on <span style={{ color: "#8fc0f5" }}>Arc</span>.
             </h1>
             <p className="lead">
-              Arc Early is an independent toolkit for Circle&apos;s stablecoin L1 — a sample token screener, a
-              testnet-safe USDC route planner, an ecosystem map and a sourced feed of everything happening on the road
-              to mainnet.
+              Arc Early is an independent toolkit for Circle&apos;s stablecoin L1 — live RadarDex community-token data,
+              a fail-closed mainnet bridge status, an official ecosystem map and sourced network updates.
             </p>
             <div className="hero-cta">
-              <Link className="btn primary" href="/screener">
-                Open screener
+              <Link className="btn primary" href="/memecoins">
+                Open live memecoins
               </Link>
               <Link className="btn" href="/bridge">
-                Bridge USDC
+                Bridge status
               </Link>
               <Link className="btn" href="/updates">
                 Mainnet watch
@@ -204,18 +203,22 @@ export default function DashboardPage() {
 
             <div className="card card-pad">
               <div className="eyebrow" style={{ marginBottom: 10 }}>
-                Bridge coverage
+                Mainnet bridge
               </div>
-              <div className="grid" style={{ gap: 8 }}>
-                {CHAINS.slice(0, 4).map((c) => (
-                  <div key={c.key} className="kv">
-                    <span className="k">{c.name}</span>
-                    <span className="v faint" style={{ fontWeight: 500 }}>{c.kind}</span>
-                  </div>
-                ))}
+              <div className="kv">
+                <span className="k">Status</span>
+                <span className="v" style={{ color: "var(--warn)" }}>Coming soon</span>
+              </div>
+              <div className="kv">
+                <span className="k">Arc mainnet parameters</span>
+                <span className="v faint" style={{ fontWeight: 500 }}>Not published</span>
+              </div>
+              <div className="kv">
+                <span className="k">Wallet action</span>
+                <span className="v faint" style={{ fontWeight: 500 }}>Disabled</span>
               </div>
               <Link className="btn sm" href="/bridge" style={{ marginTop: 14 }}>
-                Open testnet planner →
+                View official status →
               </Link>
             </div>
 
