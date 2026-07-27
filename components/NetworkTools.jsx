@@ -1,18 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useSwitchChain } from "wagmi";
 import { arcTestnet } from "@/lib/chains";
 
 export function CopyRow({ label, value, href }) {
   const [copied, setCopied] = useState(false);
+  const resetTimer = useRef(null);
+
+  useEffect(
+    () => () => {
+      clearTimeout(resetTimer.current);
+    },
+    []
+  );
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1400);
+      clearTimeout(resetTimer.current);
+      resetTimer.current = setTimeout(() => setCopied(false), 1400);
     } catch {
       setCopied(false);
     }

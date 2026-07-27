@@ -5,7 +5,7 @@ import { ROUTERS } from "@/lib/data";
 export const metadata = {
   title: "Bridge",
   description:
-    "Compare USDC bridge routes between Arc, Ethereum L1, Base, Robinhood Chain, Arbitrum and Solana — CCTP V2, Arc canonical, Stargate and Across.",
+    "Plan testnet USDC routes between Arc Testnet, Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia and Solana Devnet using Circle CCTP.",
 };
 
 export default function BridgePage() {
@@ -13,18 +13,16 @@ export default function BridgePage() {
     <div className="shell">
       <PageHead
         eyebrow="Tools"
-        title="Bridge router"
+        title="Testnet bridge planner"
         actions={[
-          <span key="1" className="badge">Ethereum L1</span>,
-          <span key="2" className="badge">Base</span>,
-          <span key="3" className="badge">Robinhood Chain</span>,
-          <span key="4" className="badge">Arbitrum</span>,
-          <span key="5" className="badge">Solana</span>,
+          <span key="1" className="badge">Ethereum Sepolia</span>,
+          <span key="2" className="badge">Base Sepolia</span>,
+          <span key="3" className="badge">Arbitrum Sepolia</span>,
+          <span key="4" className="badge">Solana Devnet</span>,
         ]}
       >
-        Pick a source and destination, and Arc Early ranks every router that can carry native USDC between them — fees,
-        gas, time to finality and the trust assumption you take on. It plans routes; it never holds funds or signs
-        transactions.
+        Pick a source and destination to inspect a testnet-safe CCTP path, estimated gas and finality. Testnet USDC has
+        no financial value. This planner never holds funds, builds calldata or signs transactions.
       </PageHead>
 
       <Bridge />
@@ -33,7 +31,7 @@ export default function BridgePage() {
         <div className="section-head">
           <div>
             <div className="eyebrow">Reference</div>
-            <h2>How each router works</h2>
+            <h2>How the supported path works</h2>
           </div>
         </div>
         <div className="grid eco-grid">
@@ -59,12 +57,11 @@ export default function BridgePage() {
       </section>
 
       <section className="card card-pad" style={{ marginBottom: 30 }}>
-        <h3>Why Robinhood Chain takes two legs</h3>
+        <h3>Why every chain here is a test network</h3>
         <p className="muted" style={{ fontSize: 13.5, marginBottom: 0 }}>
-          Robinhood Chain is an Arbitrum Orbit rollup and is not a Circle CCTP domain, so native USDC cannot be burned
-          and minted directly into it. Routes through it settle Arc ⇄ Arbitrum One over CCTP first, then hop the Orbit
-          canonical bridge — which is why the quotes show a higher flat cost and a longer finality window than the Base
-          or Ethereum legs.
+          Arc&apos;s active public network is Testnet, so pairing it with Ethereum, Base, Arbitrum or Solana mainnet would
+          cross network environments and cannot produce a valid transfer. The planner uses Sepolia and Devnet
+          counterparts supported by Circle instead.
         </p>
       </section>
     </div>

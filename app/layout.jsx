@@ -10,7 +10,7 @@ export const metadata = {
     template: "%s · Arc Early",
   },
   description:
-    "Early tooling for Circle's Arc blockchain: token screener, cross-chain USDC bridge route planner (Ethereum, Base, Robinhood Chain), live testnet stream, ecosystem directory and mainnet updates.",
+    "Early tooling for Circle's Arc blockchain: sample token screener, testnet-safe USDC route planner, live Arc Testnet stream, ecosystem directory and network updates.",
 };
 
 export default function RootLayout({ children }) {

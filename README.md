@@ -10,7 +10,7 @@ Not affiliated with Circle.
 | --- | --- |
 | `/` | Dashboard — network status tiles, tool cards, top pairs, latest updates, ecosystem spotlight |
 | `/screener` | Token screener: sortable columns, category/liquidity filters, risk flags, sparklines |
-| `/bridge` | USDC bridge route planner across Arc, Ethereum L1, Base, Robinhood Chain, Arbitrum, Solana |
+| `/bridge` | Testnet USDC planner across Arc Testnet, Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia and Solana Devnet |
 | `/updates` | Mainnet watch — dated, source-linked Arc milestones with tag filters |
 | `/ecosystem` | Directory of projects building on Arc, with RadarDex featured |
 | `/network` | Chain IDs, RPC/explorer/faucet, add-to-wallet, mainnet status |
@@ -44,13 +44,13 @@ Next.js 15 (App Router, JavaScript), RainbowKit 2 + wagmi 2 + viem, plain CSS fo
 
 All content lives in [`lib/data.js`](lib/data.js):
 
-- `ARC_NETWORKS` — testnet parameters (chain ID 5042002, `rpc.testnet.arc.network`, `testnet.arcscan.app`) and mainnet status. Mainnet is **not live**: Circle targets a beta in summer 2026 and has not published mainnet RPC, chain ID or canonical bridge contracts.
-- `CHAINS` / `ROUTERS` / `quote()` — the bridge model. Fees are `bps + flat` plus a gas estimate; `routersFor()` intersects each chain's supported routers, and Robinhood Chain (an Arbitrum Orbit rollup, not a CCTP domain) always falls back to the two-leg Orbit path.
+- `ARC_NETWORKS` — testnet parameters (chain ID 5042002, `rpc.testnet.arc.network`, `testnet.arcscan.app`) and mainnet status. Public Testnet is the current active network; mainnet phases remain upcoming.
+- `CHAINS` / `ROUTERS` / `quote()` — the testnet-only bridge model. It keeps Arc Testnet paired with Sepolia/Devnet destinations supported by Circle CCTP and never mixes testnet with mainnet funds.
 - `TOKENS` — **sample** screener rows. Arc mainnet has no public price feed yet, so these exist to exercise the UI. Replace with a fetch against an Arc indexer or the RadarDex API keeping this shape: `{ symbol, name, kind, price, change24h, volume24h, liquidity, fdv, holders, ageHours, audit, pool, spark[] }`.
 - `ECOSYSTEM` — project directory. `UPDATES` — dated entries, each with a source link.
 
 ## Caveats worth keeping
 
-- The bridge **plans routes only**. It never holds funds, builds calldata, or signs anything; "Review route" links out to the router's own site. Everything wallet-related is read-only — the app reads addresses and balances and can ask the wallet to switch/add a network, which the wallet still prompts on. No `sendTransaction` or `signMessage` call exists anywhere in the codebase.
-- Published sources disagree on whether Arc's USDC gas unit exposes 6 or 18 decimals. `AddTestnetButton` sends 18 — verify against [docs.arc.io](https://docs.arc.io/arc/references/connect-to-arc) before depending on displayed balances.
-- Fake "Arc Bridge" sites claiming live mainnet access are circulating. There is nothing to bridge to yet.
+- The bridge **plans testnet routes only**. It never holds funds, builds calldata, or signs anything; the review action links to Circle's supported-chain documentation. Everything wallet-related is read-only — the app reads addresses and balances and can ask the wallet to switch/add a network, which the wallet still prompts on. No `sendTransaction` or `signMessage` call exists anywhere in the codebase.
+- Arc's official wallet setup specifies 18 decimals for native USDC. Some wallets may still label the gas token as ETH even though the underlying token is USDC.
+- Arc mainnet parameters are not public. Treat any claimed mainnet endpoint or bridge as unsafe until the official Arc documentation publishes it.

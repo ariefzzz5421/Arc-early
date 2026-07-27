@@ -30,9 +30,9 @@ export default function Footer() {
         </div>
         <p className="disclaimer">
           <UsdcLogo size={13} /> Arc uses USDC as its native gas token. Arc mainnet has not launched — mainnet RPC,
-          chain ID and canonical bridge contracts are unpublished, and any site offering live Arc mainnet bridging today
-          should be treated as a scam. Screener rows and bridge quotes on this site are estimates for planning only, not
-          executable trades, and nothing here is financial advice. Data reviewed {SITE.updated}.
+          chain ID and production bridge parameters are unpublished. The bridge planner uses test networks only;
+          testnet USDC has no financial value. Screener rows and route estimates are samples for planning, not executable
+          trades, and nothing here is financial advice. Data reviewed {SITE.updated}.
         </p>
       </div>
     </footer>

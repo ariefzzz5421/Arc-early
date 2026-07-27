@@ -15,14 +15,14 @@ const FEATURES = [
   {
     href: "/bridge",
     icon: "⇄",
-    title: "Bridge router",
-    body: "Compare CCTP V2, the Arc canonical bridge, Stargate and Across across Ethereum L1, Base, Robinhood Chain, Arbitrum and Solana.",
+    title: "Testnet bridge planner",
+    body: "Plan CCTP routes across Arc Testnet, Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia and Solana Devnet without mixing testnet and mainnet funds.",
   },
   {
     href: "/updates",
     icon: "◈",
     title: "Mainnet watch",
-    body: "Every dated Arc milestone with a source link, from the testnet launch through the summer 2026 mainnet beta window.",
+    body: "Every dated Arc milestone with a source link, from the public testnet launch through the upcoming mainnet phases.",
   },
   {
     href: "/ecosystem",
@@ -58,7 +58,7 @@ export default function DashboardPage() {
               <span className="badge live">
                 <span className="dot" /> Testnet live
               </span>
-              <span className="badge pending">Mainnet beta · summer 2026</span>
+              <span className="badge pending">Mainnet · upcoming</span>
               <span className="badge info">
                 <UsdcLogo size={13} /> Gas paid in USDC
               </span>
@@ -67,8 +67,9 @@ export default function DashboardPage() {
               Get early on <span style={{ color: "#8fc0f5" }}>Arc</span>.
             </h1>
             <p className="lead">
-              Arc Early is an independent toolkit for Circle&apos;s stablecoin L1 — a token screener, a cross-chain USDC
-              bridge router, an ecosystem map and a sourced feed of everything happening on the road to mainnet.
+              Arc Early is an independent toolkit for Circle&apos;s stablecoin L1 — a sample token screener, a
+              testnet-safe USDC route planner, an ecosystem map and a sourced feed of everything happening on the road
+              to mainnet.
             </p>
             <div className="hero-cta">
               <Link className="btn primary" href="/screener">
@@ -130,7 +131,7 @@ export default function DashboardPage() {
         <div className="section-head">
           <div>
             <div className="eyebrow">Screener</div>
-            <h2>Top Arc pairs by volume</h2>
+            <h2>Sample Arc pairs by volume</h2>
           </div>
           <Link className="btn sm" href="/screener">
             All pairs →
@@ -214,7 +215,7 @@ export default function DashboardPage() {
                 ))}
               </div>
               <Link className="btn sm" href="/bridge" style={{ marginTop: 14 }}>
-                Open bridge router →
+                Open testnet planner →
               </Link>
             </div>
 
