@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useBalance, useSwitchChain } from "wagmi";
 import { CHAINS, chainByKey, routersFor, quote } from "@/lib/data";
@@ -25,12 +25,19 @@ function ChainPicker({ value, onChange, exclude }) {
   );
 }
 
+function normalizeAmount(value) {
+  const cleaned = value.replace(/[^\d.]/g, "");
+  const [whole, ...decimals] = cleaned.split(".");
+  if (decimals.length === 0) return whole;
+  return `${whole}.${decimals.join("").slice(0, 6)}`;
+}
+
 export default function Bridge() {
   const [from, setFrom] = useState("arc");
   const [to, setTo] = useState("base");
   const [amount, setAmount] = useState("1000");
   const [routerKey, setRouterKey] = useState(null);
-  const [reviewing, setReviewing] = useState(false);
+  const [reviewedSelection, setReviewedSelection] = useState(null);
 
   const { address, isConnected, chainId: connectedChainId } = useAccount();
   const { switchChain, isPending: switching } = useSwitchChain();
@@ -55,10 +62,8 @@ export default function Bridge() {
   const fastestKey = quotes.length
     ? [...quotes].sort((a, b) => a.etaSec - b.etaSec)[0].router.key
     : null;
-
-  useEffect(() => {
-    setReviewing(false);
-  }, [from, to, amount, routerKey]);
+  const selectionKey = `${from}:${to}:${amount}:${routerKey ?? cheapestKey ?? ""}`;
+  const reviewing = reviewedSelection === selectionKey;
 
   const flip = () => {
     setFrom(to);
@@ -68,9 +73,11 @@ export default function Bridge() {
 
   const fromChain = chainByKey(from);
   const toChain = chainByKey(to);
-  const amt = Number(amount) || 0;
+  const parsedAmount = Number(amount);
+  const amt = Number.isFinite(parsedAmount) && parsedAmount > 0 ? parsedAmount : 0;
   const arcLeg = from === "arc" || to === "arc";
   const wrongNetwork = isConnected && fromChainId && connectedChainId !== fromChainId;
+  const costDigits = selected && selected.totalFee < 0.01 ? 4 : 2;
 
   return (
     <div className="bridge-grid">
@@ -79,7 +86,7 @@ export default function Bridge() {
         <div className="card card-pad grid" style={{ gap: 10 }}>
           <div className="section-head" style={{ marginBottom: 4 }}>
             <div>
-              <div className="eyebrow">Route planner</div>
+              <div className="eyebrow">Testnet route planner</div>
               <h2 style={{ marginTop: 6 }}>Bridge USDC</h2>
             </div>
             <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" label="Connect wallet" />
@@ -114,7 +121,7 @@ export default function Bridge() {
                 className="amount-input mono"
                 inputMode="decimal"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+                onChange={(e) => setAmount(normalizeAmount(e.target.value))}
                 aria-label="Amount in USDC"
               />
             </div>
@@ -184,26 +191,25 @@ export default function Bridge() {
             className="btn primary wide"
             type="button"
             disabled={!selected || amt <= 0}
-            onClick={() => setReviewing(true)}
+            onClick={() => setReviewedSelection(selectionKey)}
           >
-            {amt > 0 ? `Review route · ${usd(amt, { digits: 2 })} USDC` : "Enter an amount"}
+            {amt > 0 ? `Review testnet route · ${usd(amt, { digits: 2 })} USDC` : "Enter an amount"}
           </button>
 
           {reviewing && selected && (
             <div className="grid" style={{ gap: 10 }}>
               <Notice tone="blue">
-                Arc Early does not move funds. Take this route to{" "}
+                Arc Early does not move funds. Review Circle&apos;s supported-chain documentation for{" "}
                 <a href={selected.router.link} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>
                   {selected.router.name}
                 </a>{" "}
-                and re-verify the quote there before signing anything.
+                before building or signing a transfer.
               </Notice>
               <div className="card card-pad">
                 <div className="kv">
                   <span className="k">Path</span>
                   <span className="v">
-                    {fromChain.name} → {selected.router.key === "orbit-canonical" ? "Arbitrum One → " : ""}
-                    {toChain.name}
+                    {fromChain.name} → {toChain.name}
                   </span>
                 </div>
                 <div className="kv">
@@ -229,9 +235,9 @@ export default function Bridge() {
 
         {arcLeg && (
           <Notice>
-            <b>Arc mainnet is not live.</b> Circle has not published mainnet RPC, chain ID or canonical bridge contracts,
-            so Arc legs are quoted from testnet and announced parameters. Any site that offers you a live Arc mainnet
-            bridge today is a scam — verify against{" "}
+            <b>Testnet only.</b> Every route shown here uses tokens with no financial value. Arc mainnet parameters are
+            not public, so this planner intentionally never mixes Arc Testnet with a mainnet destination. Verify support
+            against{" "}
             <a href="https://docs.arc.io" target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>
               docs.arc.io
             </a>
@@ -254,7 +260,7 @@ export default function Bridge() {
               <div style={{ minWidth: 0 }}>
                 <div className="r-name">
                   {q.router.name}
-                  {q.router.key === cheapestKey && <span className="badge live">Cheapest</span>}
+                  {q.router.key === cheapestKey && <span className="badge live">Supported</span>}
                   {q.router.key === fastestKey && q.router.key !== cheapestKey && (
                     <span className="badge info">Fastest</span>
                   )}
@@ -267,7 +273,7 @@ export default function Bridge() {
                 <div className="mono" style={{ fontWeight: 700 }}>
                   {q.out.toLocaleString("en-US", { maximumFractionDigits: 2 })}
                 </div>
-                <div className="r-meta">fee {usd(q.totalFee, { digits: 2 })}</div>
+                <div className="r-meta">fee {usd(q.totalFee, { digits: q.totalFee < 0.01 ? 4 : 2 })}</div>
               </div>
             </button>
           ))}
@@ -277,19 +283,19 @@ export default function Bridge() {
         {selected && (
           <div className="card card-pad">
             <div className="eyebrow" style={{ marginBottom: 10 }}>
-              Quote breakdown
+              Planning estimate · test tokens
             </div>
             <div className="kv">
               <span className="k">Protocol fee ({selected.router.bps} bps{selected.router.flat ? ` + $${selected.router.flat}` : ""})</span>
-              <span className="v mono">{usd(selected.protocolFee, { digits: 2 })}</span>
+              <span className="v mono">{usd(selected.protocolFee, { digits: costDigits })}</span>
             </div>
             <div className="kv">
               <span className="k">Gas (est., both legs)</span>
-              <span className="v mono">{usd(selected.gasEstimate, { digits: 2 })}</span>
+              <span className="v mono">{usd(selected.gasEstimate, { digits: costDigits })}</span>
             </div>
             <div className="kv">
               <span className="k">Total cost</span>
-              <span className="v mono">{usd(selected.totalFee, { digits: 2 })}</span>
+              <span className="v mono">{usd(selected.totalFee, { digits: costDigits })}</span>
             </div>
             <div className="kv">
               <span className="k">Effective rate</span>
@@ -317,9 +323,7 @@ export default function Bridge() {
                   <div style={{ fontWeight: 600, fontSize: 13.5 }}>{c.name}</div>
                   <div className="faint" style={{ fontSize: 11.5 }}>{c.kind}</div>
                 </div>
-                <span className={`badge ${c.key === "arc" ? "pending" : "live"}`}>
-                  {c.key === "arc" ? "testnet" : "mainnet"}
-                </span>
+                <span className="badge info">{c.env}</span>
               </div>
             ))}
           </div>

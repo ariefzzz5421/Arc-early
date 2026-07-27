@@ -24,7 +24,7 @@ export default function Header() {
           <ArcLogo size={34} />
           <span>
             <span className="brand-name">Arc Early</span>
-            <span className="brand-sub">Arc mainnet tools</span>
+            <span className="brand-sub">Arc testnet tools</span>
           </span>
         </Link>
 
@@ -43,7 +43,7 @@ export default function Header() {
           <span className="badge info hide-sm">
             <UsdcLogo size={14} /> USDC gas
           </span>
-          <span className="badge pending hide-sm">Mainnet: beta pending</span>
+          <span className="badge pending hide-sm">Mainnet: upcoming</span>
           <ConnectButton
             showBalance={{ smallScreen: false, largeScreen: true }}
             accountStatus={{ smallScreen: "avatar", largeScreen: "full" }}

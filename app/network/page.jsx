@@ -64,8 +64,8 @@ export default function NetworkPage() {
 
           <AddTestnetButton />
           <p className="faint" style={{ fontSize: 12.5, margin: 0, lineHeight: 1.55 }}>
-            Wallets handle custom gas tokens differently, and published sources disagree on whether Arc&apos;s USDC gas
-            unit is exposed with 6 or 18 decimals — balances may display oddly. Confirm the decimals on{" "}
+            Arc&apos;s official wallet setup specifies 18 decimals for the native USDC gas unit. Some wallets may label
+            a custom gas token as ETH even though the underlying token is USDC; confirm the settings on{" "}
             <a href="https://docs.arc.io/arc/references/connect-to-arc" target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>
               docs.arc.io
             </a>{" "}
@@ -95,8 +95,8 @@ export default function NetworkPage() {
                 <span className="v faint">unpublished</span>
               </div>
               <div className="kv">
-                <span className="k">Target window</span>
-                <span className="v">Summer 2026 (beta)</span>
+                <span className="k">Deployment status</span>
+                <span className="v">Upcoming</span>
               </div>
               <div className="kv">
                 <span className="k">Gas token</span>
@@ -136,8 +136,7 @@ export default function NetworkPage() {
           volatile native asset. Consensus runs on Malachite, a Tendermint-based BFT engine with deterministic
           sub-second finality. The chain ships with a built-in FX engine for 24/7 payment-versus-payment stablecoin
           settlement and opt-in, compliance-friendly privacy — the design targets institutional settlement rather than
-          general-purpose DeFi. Per the whitepaper, initial ARC supply is 10B tokens: 60% ecosystem, 25% Circle, 15%
-          long-term reserves.
+          general-purpose DeFi. There is no volatile native gas token; USDC is native to the network.
         </p>
         <p className="faint" style={{ fontSize: 12.5, marginBottom: 0 }}>
           Arc Early is an independent project and is not affiliated with, endorsed by, or operated by Circle.
