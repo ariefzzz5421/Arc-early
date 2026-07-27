@@ -8,6 +8,7 @@ import { ArcLogo, UsdcLogo } from "./Logos";
 const NAV = [
   { href: "/", label: "Dashboard" },
   { href: "/screener", label: "Screener" },
+  { href: "/memecoins", label: "Memecoins" },
   { href: "/bridge", label: "Bridge" },
   { href: "/updates", label: "Updates" },
   { href: "/ecosystem", label: "Ecosystem" },
@@ -24,7 +25,7 @@ export default function Header() {
           <ArcLogo size={34} />
           <span>
             <span className="brand-name">Arc Early</span>
-            <span className="brand-sub">Arc testnet tools</span>
+            <span className="brand-sub">Arc market watch</span>
           </span>
         </Link>
 
