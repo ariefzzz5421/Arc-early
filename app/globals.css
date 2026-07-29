@@ -1647,6 +1647,129 @@ table.data tbody tr:hover {
   white-space: nowrap;
 }
 
+/* ---------- wallet tracker ---------- */
+.tracker-stats {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.wallet-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.wallet-form .input.mono {
+  flex: 1 1 380px;
+  min-width: 240px;
+}
+
+.wallet-form .input:not(.mono) {
+  flex: 0 1 180px;
+  min-width: 140px;
+}
+
+.wallet-table {
+  min-width: 1120px !important;
+}
+
+.wallet-cell {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.wallet-avatar {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--radar);
+  background: rgba(123, 97, 255, 0.14);
+  border: 1px solid rgba(123, 97, 255, 0.34);
+}
+
+.wallet-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.wallet-link {
+  font-size: 12px;
+  color: var(--silver-500);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.wallet-link:hover {
+  color: var(--text);
+}
+
+.wallet-link.danger:hover {
+  color: var(--down);
+}
+
+.activity-feed {
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 150px 110px 82px;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.activity-row:hover {
+  background: rgba(23, 44, 77, 0.34);
+}
+
+.activity-dir {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+}
+
+.activity-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.activity-main .faint {
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-block,
+.activity-when {
+  font-size: 11.5px;
+  text-align: right;
+}
+
 @media (max-width: 980px) {
   .hero-grid,
   .bridge-grid,
@@ -1658,7 +1781,8 @@ table.data tbody tr:hover {
     order: -1;
   }
 
-  .stats {
+  .stats,
+  .tracker-stats {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1666,6 +1790,16 @@ table.data tbody tr:hover {
   .feature,
   .bridge-flow-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .activity-row {
+    grid-template-columns: 46px minmax(0, 1fr) 120px;
+    row-gap: 4px;
+  }
+
+  .activity-block,
+  .activity-when {
+    display: none;
   }
 
   .ecosystem-feature,

@@ -17,6 +17,7 @@ export default function Footer() {
           <div className="footer-links">
             <Link href="/screener">Screener</Link>
             <Link href="/memecoins">Memecoins</Link>
+            <Link href="/wallets">Wallets</Link>
             <Link href="/bridge">Bridge</Link>
             <Link href="/updates">Updates</Link>
             <Link href="/ecosystem">Ecosystem</Link>
