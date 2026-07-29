@@ -32,10 +32,10 @@ export default function Footer() {
         </div>
         <p className="disclaimer">
           <UsdcLogo size={13} /> Arc uses USDC as its native gas token. Arc mainnet has not launched — mainnet RPC,
-          chain ID and production bridge parameters are unpublished. The bridge remains read-only and marked Coming
-          Soon. RadarDex market rows are live third-party data; token identity and values are not guaranteed. The
-          legacy screener remains clearly labeled sample data, and nothing here is financial advice. Data reviewed{" "}
-          {SITE.updated}.
+          chain ID and production bridge parameters are unpublished. The bridge executes testnet CCTP routes only and
+          blocks mainnet funds. RadarDex market rows are live third-party data; token identity and values are not
+          guaranteed. The legacy screener remains clearly labeled sample data, and nothing here is financial advice.
+          Data reviewed {SITE.updated}.
         </p>
       </div>
     </footer>

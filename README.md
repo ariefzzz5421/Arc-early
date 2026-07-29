@@ -12,7 +12,7 @@ Not affiliated with Circle.
 | `/screener` | Token screener: sortable columns, category/liquidity filters, risk flags, sparklines |
 | `/memecoins` | Live community-token market data from the API used by RadarDex |
 | `/wallets` | Whale/trader wallet tracker — live balances, all-time tx counts and per-block activity matching |
-| `/bridge` | Fail-closed Arc mainnet bridge status with official Arc and Circle sources |
+| `/bridge` | Circle CCTP V2 testnet bridge with wallet validation, estimates, Forwarder minting and recovery |
 | `/updates` | Mainnet watch — dated, source-linked Arc milestones with tag filters |
 | `/ecosystem` | Directory of projects building on Arc, with RadarDex featured |
 | `/network` | Chain IDs, RPC/explorer/faucet, add-to-wallet, mainnet status |
@@ -27,7 +27,7 @@ npm run dev
 
 Then open http://localhost:3000. `npm run build && npm start` for production.
 
-Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` (free from [cloud.reown.com](https://cloud.reown.com)) if you want WalletConnect, MetaMask-mobile and Rainbow in the wallet list. Without it the site still runs — [`lib/wagmi.js`](lib/wagmi.js) ships only the connectors that work standalone (browser-injected + Coinbase Wallet) rather than rendering options that are guaranteed to fail.
+Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` (free from [cloud.reown.com](https://cloud.reown.com)) if you want WalletConnect QR, MetaMask-mobile and Rainbow in the wallet list. Without it the site still runs — [`lib/wagmi.js`](lib/wagmi.js) keeps Rabby, EIP-6963 browser-injected wallets such as Zerion, and Coinbase Wallet available.
 
 ## Stack
 
@@ -42,7 +42,7 @@ Next.js 15 (App Router, JavaScript), RainbowKit 2 + wagmi 2 + viem, plain CSS fo
 - [`lib/useWalletTracker.js`](lib/useWalletTracker.js) powers `/wallets`. It subscribes to `newHeads` **with full transaction bodies** and matches every transaction's `from`/`to` against the tracked address set, so activity is counted as it lands instead of being polled after the fact. Blocks are de-duplicated by number (the HTTP fallback re-emits on restart), balances and all-time nonces come from a separate batched HTTP client refreshed every 15s, and no BigInt reaches React state.
 - RPC endpoints are overridable: set `NEXT_PUBLIC_ARC_RPC_HTTP` / `NEXT_PUBLIC_ARC_RPC_WS` in `.env.local` to point the tracker at a dedicated provider. Both default to Arc's shared public testnet endpoints and are ignored unless they carry an `http(s)://` / `ws(s)://` scheme. The tracker's footer says when it is running on the public endpoint.
 - `<ConnectButton />` sits in the header; `/network` uses wagmi's `switchChain`, which asks the wallet to add Arc when it doesn't know the network.
-- The bridge page has no wallet or transaction action until Arc publishes mainnet parameters and Circle lists a production CCTP route.
+- The bridge page executes native testnet USDC routes through Circle CCTP V2 and Circle Forwarder. It does not expose an Arc mainnet route.
 
 ## Data
 
@@ -56,7 +56,7 @@ Static reference content lives in [`lib/data.js`](lib/data.js); the RadarDex fee
 
 ## Caveats worth keeping
 
-- The bridge is **Coming Soon** and read-only. It never holds funds, builds calldata, asks for a signature or displays simulated route quotes.
+- The bridge is **testnet only** and self-custodial. It estimates the selected Circle route before signing, never receives a private key, and blocks Arc mainnet funds.
 - RadarDex rows are live third-party data. Names, symbols, icons, prices and liquidity are not treated as verified; the UI warns users to verify contracts and never substitutes sample values when the upstream feed is unavailable.
 - `/wallets` ships four seeded whale/trader addresses taken from RadarDex profiles. The **Reported** column is the portfolio size quoted on that profile — a third-party reference kept in its own column, never summed with the on-chain balance, because RadarDex labels its market as Arc mainnet while the app reads Arc's public testnet. Wallets added in the UI are stored in `localStorage` only.
 - Arc's official wallet setup specifies 18 decimals for native USDC. Some wallets may still label the gas token as ETH even though the underlying token is USDC.

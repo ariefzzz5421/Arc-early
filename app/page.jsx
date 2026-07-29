@@ -15,8 +15,8 @@ const FEATURES = [
   {
     href: "/bridge",
     icon: "⇄",
-    title: "Mainnet bridge status",
-    body: "A fail-closed status page that stays read-only until Arc publishes mainnet parameters and a supported production route.",
+    title: "Safe testnet bridge",
+    body: "Bridge native testnet USDC through Circle CCTP V2 with fee review, wallet validation and Forwarder minting.",
   },
   {
     href: "/updates",
@@ -68,7 +68,7 @@ export default function DashboardPage() {
             </h1>
             <p className="lead">
               Arc Early is an independent toolkit for Circle&apos;s stablecoin L1 — live RadarDex community-token data,
-              a fail-closed mainnet bridge status, an official ecosystem map and sourced network updates.
+              a safe USDC testnet bridge, an official ecosystem map and sourced network updates.
             </p>
             <div className="hero-cta">
               <Link className="btn primary" href="/memecoins">
@@ -203,22 +203,22 @@ export default function DashboardPage() {
 
             <div className="card card-pad">
               <div className="eyebrow" style={{ marginBottom: 10 }}>
-                Mainnet bridge
+                USDC bridge
               </div>
               <div className="kv">
                 <span className="k">Status</span>
-                <span className="v" style={{ color: "var(--warn)" }}>Coming soon</span>
+                <span className="v" style={{ color: "var(--up)" }}>Testnet live</span>
               </div>
               <div className="kv">
-                <span className="k">Arc mainnet parameters</span>
-                <span className="v faint" style={{ fontWeight: 500 }}>Not published</span>
+                <span className="k">Route</span>
+                <span className="v faint" style={{ fontWeight: 500 }}>Circle CCTP V2</span>
               </div>
               <div className="kv">
-                <span className="k">Wallet action</span>
-                <span className="v faint" style={{ fontWeight: 500 }}>Disabled</span>
+                <span className="k">Mainnet funds</span>
+                <span className="v faint" style={{ fontWeight: 500 }}>Blocked</span>
               </div>
               <Link className="btn sm" href="/bridge" style={{ marginTop: 14 }}>
-                View official status →
+                Open bridge →
               </Link>
             </div>
 

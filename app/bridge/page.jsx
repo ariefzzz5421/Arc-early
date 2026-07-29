@@ -1,36 +1,32 @@
-import { ArcLogo, UsdcLogo } from "@/components/Logos";
+import SafeBridge from "@/components/SafeBridge";
 import { Notice, PageHead, Stat } from "@/components/ui";
 
 export const metadata = {
-  title: "Mainnet Bridge Status",
+  title: "Arc Testnet USDC Bridge",
   description:
-    "Arc mainnet bridge readiness based on Arc and Circle's official deployment and CCTP documentation.",
+    "Bridge testnet USDC between Arc Testnet, Base Sepolia, Ethereum Sepolia and Arbitrum Sepolia using Circle CCTP V2.",
 };
 
-const OFFICIAL_DETAILS = [
+const FLOW = [
   {
-    label: "Current public network",
-    value: "Public Testnet",
-    note: "Live and permissionless · chain ID 5042002",
-    source: "https://docs.arc.io/arc/concepts/deployment-model",
+    step: "01",
+    title: "Connect your own wallet",
+    body: "Rabby, Zerion, MetaMask, Coinbase and other EIP-1193 wallets stay self-custodial. Arc Early never receives a key.",
   },
   {
-    label: "Private mainnet",
-    value: "Upcoming",
-    note: "Production network for real-value flows",
-    source: "https://docs.arc.io/arc/concepts/deployment-model",
+    step: "02",
+    title: "Estimate before signing",
+    body: "Circle Bridge Kit validates the route and returns protocol, Forwarder and gas costs before any transaction starts.",
   },
   {
-    label: "Public mainnet",
-    value: "Upcoming",
-    note: "Public RPC, chain ID and explorer not published",
-    source: "https://docs.arc.io/arc/concepts/deployment-model",
+    step: "03",
+    title: "Approve and burn USDC",
+    body: "Your wallet signs only on the selected source testnet. SLOW is the default; FAST has an explicit fee cap.",
   },
   {
-    label: "Canonical USDC route",
-    value: "CCTP",
-    note: "Burn and mint; Arc Testnet is domain 26",
-    source: "https://docs.arc.io/integrate/infrastructure/bridges",
+    step: "04",
+    title: "Forward and verify the mint",
+    body: "Circle Forwarder submits the destination mint, so a new Arc user does not need an existing Arc gas balance.",
   },
 ];
 
@@ -38,87 +34,96 @@ export default function BridgePage() {
   return (
     <div className="shell">
       <PageHead
-        eyebrow="Mainnet readiness"
-        title="Arc mainnet bridge"
+        eyebrow="Bridge"
+        title="Bridge USDC to Arc safely"
         actions={[
-          <span className="badge pending" key="status">
-            Coming soon
+          <span className="badge live" key="testnet">
+            Testnet live
           </span>,
-          <span className="badge info" key="source">
-            Official Arc status
+          <span className="badge info" key="protocol">
+            Circle CCTP V2
+          </span>,
+          <span className="badge" key="asset">
+            Native USDC only
           </span>,
         ]}
       >
-        Arc Early will only enable a production bridge after Arc publishes mainnet network parameters and an official
-        router exposes a supported route. No simulated quotes, wallet prompts or transaction buttons are shown before
-        that point.
+        Move testnet USDC between Arc Testnet and supported Sepolia networks. The route is restricted to Circle&apos;s
+        canonical burn-and-mint path, shows a live estimate before signing, and uses Circle Forwarder for the destination
+        mint.
       </PageHead>
 
-      <section className="bridge-coming card">
-        <div className="bridge-coming-mark">
-          <ArcLogo size={96} />
-          <span className="bridge-line" aria-hidden="true" />
-          <UsdcLogo size={68} />
-        </div>
-        <div>
-          <div className="eyebrow">Status checked against official docs</div>
-          <h2>Mainnet bridge is coming soon</h2>
-          <p className="muted">
-            Arc&apos;s official deployment model currently lists Public Testnet as live and both Private Mainnet and
-            Public Mainnet as upcoming. Circle&apos;s CCTP matrix lists Arc Testnet—not Arc Mainnet—as a supported
-            domain. That means there is no official public mainnet router for this app to connect to yet.
-          </p>
-          <div className="pill-row">
-            <a
-              className="btn primary"
-              href="https://docs.arc.io/arc/concepts/deployment-model"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Check Arc deployment status ↗
-            </a>
-            <a
-              className="btn"
-              href="https://developers.circle.com/cctp/concepts/supported-chains-and-domains"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Check CCTP support ↗
-            </a>
-          </div>
-        </div>
-      </section>
+      <SafeBridge />
 
       <div className="grid stats bridge-stats">
-        <Stat label="Bridge state" value="Coming soon" sub="waiting for official mainnet route" kind="pending" />
-        <Stat label="Mainnet parameters" value="Not public" sub="no confirmed chain ID or RPC" kind="pending" />
-        <Stat label="Live CCTP domain" value="26" sub="Arc Testnet only" kind="info" />
-        <Stat label="Mainnet asset safety" value="Disabled" sub="no wallet transaction can be started" kind="good" />
+        <Stat label="Arc network" value="Testnet" sub="chain ID 5042002" kind="good" />
+        <Stat label="Canonical route" value="CCTP V2" sub="no wrapped USDC" kind="info" />
+        <Stat label="Destination gas" value="Forwarded" sub="fee shown before signing" kind="info" />
+        <Stat label="Mainnet funds" value="Blocked" sub="no Arc mainnet route in this UI" kind="good" />
       </div>
 
       <section className="section">
         <div className="section-head">
           <div>
-            <div className="eyebrow">Latest official details</div>
-            <h2>What is available today</h2>
+            <div className="eyebrow">Verified flow</div>
+            <h2>What happens after you click Bridge</h2>
           </div>
-          <span className="badge">Reviewed July 27, 2026</span>
+          <a
+            className="btn sm"
+            href="https://docs.arc.io/app-kit/quickstarts/bridge-tokens-across-blockchains"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Circle quickstart ↗
+          </a>
         </div>
-        <div className="grid eco-grid">
-          {OFFICIAL_DETAILS.map((detail) => (
-            <a className="card eco-card" href={detail.source} target="_blank" rel="noreferrer" key={detail.label}>
-              <div className="eyebrow">{detail.label}</div>
-              <h3>{detail.value}</h3>
-              <p>{detail.note}</p>
-              <span className="badge info">Official source ↗</span>
-            </a>
+
+        <div className="grid bridge-flow-grid">
+          {FLOW.map((item) => (
+            <article className="card bridge-flow-card" key={item.step}>
+              <span>{item.step}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
           ))}
         </div>
       </section>
 
+      <section className="card card-pad bridge-source-note">
+        <div>
+          <div className="eyebrow">Why this route</div>
+          <h3>CCTP for one bridge; Gateway for a reusable unified balance</h3>
+          <p className="muted">
+            The deposit → indexer wait → burn intent → attestation → mint flow in the supplied screenshot describes
+            Circle Gateway. That is useful when a user wants to deposit once and spend a unified USDC balance repeatedly.
+            For a direct wallet-to-wallet bridge, Circle&apos;s Bridge Kit is the smaller and safer path because it
+            orchestrates CCTP approval, burn, attestation and mint with built-in recovery.
+          </p>
+        </div>
+        <div className="bridge-source-links">
+          <a href="https://docs.arc.io/app-kit/bridge" target="_blank" rel="noreferrer">
+            Arc Bridge Kit docs ↗
+          </a>
+          <a
+            href="https://developers.circle.com/cctp/concepts/supported-chains-and-domains"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Circle supported domains ↗
+          </a>
+          <a href="https://testnet.arcscan.app" target="_blank" rel="noreferrer">
+            Official Arcscan ↗
+          </a>
+          <a href="https://arc.exploreme.pro/" target="_blank" rel="noreferrer">
+            Community explorer ↗
+          </a>
+        </div>
+      </section>
+
       <Notice>
-        <b>Do not deposit real funds yet.</b> A site claiming an Arc mainnet bridge before Arc publishes matching chain
-        parameters and contracts may be unsafe. This page intentionally fails closed and will remain read-only.
+        <b>Testnet only.</b> Testnet USDC has no cash value. The community explorer can help inspect activity, but Arc
+        Early takes network and contract truth only from Arc and Circle documentation, then links final transactions to
+        the official Arcscan explorer.
       </Notice>
 
       <div style={{ height: 30 }} />
