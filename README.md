@@ -12,7 +12,7 @@ Not affiliated with Circle.
 | `/screener` | Token screener: sortable columns, category/liquidity filters, risk flags, sparklines |
 | `/memecoins` | Live community-token market data from the API used by RadarDex |
 | `/wallets` | Whale/trader wallet tracker — live balances, all-time tx counts and per-block activity matching |
-| `/bridge` | Fail-closed Arc mainnet bridge status with official Arc and Circle sources |
+| `/bridge` | Live Circle Gateway route check — is Arc mainnet a published route yet, and through which contracts |
 | `/updates` | Mainnet watch — dated, source-linked Arc milestones with tag filters |
 | `/ecosystem` | Directory of projects building on Arc, with RadarDex featured |
 | `/network` | Chain IDs, RPC/explorer/faucet, add-to-wallet, mainnet status |
@@ -51,12 +51,15 @@ Static reference content lives in [`lib/data.js`](lib/data.js); the RadarDex fee
 - `ARC_NETWORKS` — testnet parameters (chain ID 5042002, `rpc.testnet.arc.network`, `testnet.arcscan.app`) and mainnet status. Public Testnet is the current active network; mainnet phases remain upcoming.
 - `lib/radardex.js` — bounded, normalized access to the live token feed used by radardex.io.
 - `/api/radardex/memecoins` — same-origin proxy with a timeout, schema checks and an explicit unavailable state.
+- `lib/gateway.js` — reads Circle's Gateway `/v1/info` for **both** mainnet and testnet and reports whether Arc is a published route. Contract addresses and domain ids are never hardcoded: they are whatever Circle serves, so the bridge cannot be pointed at an address this repo invented. `/api/gateway/routes` is the same-origin proxy (5-minute cache, 503 + explicit unavailable state on failure).
+- The check drives the whole `/bridge` page. If Circle lists Arc on the production API, the verdict card flips to **route open** and surfaces Circle's own wallet/minter addresses; until then it stays closed. If the API can't be reached it fails closed rather than falling back to a cached or assumed list.
 - `TOKENS` — **sample** screener rows. Arc mainnet has no public price feed yet, so these exist to exercise the UI. Replace with a fetch against an Arc indexer or the RadarDex API keeping this shape: `{ symbol, name, kind, price, change24h, volume24h, liquidity, fdv, holders, ageHours, audit, pool, spark[] }`.
 - `ECOSYSTEM` — project directory. `UPDATES` — dated entries, each with a source link.
 
 ## Caveats worth keeping
 
-- The bridge is **Coming Soon** and read-only. It never holds funds, builds calldata, asks for a signature or displays simulated route quotes.
+- The bridge is **Coming Soon** and read-only. It never holds funds, builds calldata, asks for a signature or displays simulated route quotes. The gate is not a hardcoded flag — it is Circle's own published route list, so the page opens on its own the day Arc appears there and cannot be opened early by editing a constant in this repo.
+- Arc mainnet parameters circulate informally well before launch. A chain ID or RPC that does not appear in Circle's Gateway list or Arc's official docs has not been published, regardless of who is sharing it — approving a USDC allowance against an unverified GatewayWallet is the standard way funds get drained. `/bridge` shows the verified list precisely so it can be compared against whatever someone hands you.
 - RadarDex rows are live third-party data. Names, symbols, icons, prices and liquidity are not treated as verified; the UI warns users to verify contracts and never substitutes sample values when the upstream feed is unavailable.
 - `/wallets` ships four seeded whale/trader addresses taken from RadarDex profiles. The **Reported** column is the portfolio size quoted on that profile — a third-party reference kept in its own column, never summed with the on-chain balance, because RadarDex labels its market as Arc mainnet while the app reads Arc's public testnet. Wallets added in the UI are stored in `localStorage` only.
 - Arc's official wallet setup specifies 18 decimals for native USDC. Some wallets may still label the gas token as ETH even though the underlying token is USDC.

@@ -1,10 +1,12 @@
+import GatewayRoutes from "@/components/GatewayRoutes";
 import { ArcLogo, UsdcLogo } from "@/components/Logos";
 import { Notice, PageHead, Stat } from "@/components/ui";
+import { fetchGatewayRoutes } from "@/lib/gateway";
 
 export const metadata = {
   title: "Mainnet Bridge Status",
   description:
-    "Arc mainnet bridge readiness based on Arc and Circle's official deployment and CCTP documentation.",
+    "Live Circle Gateway route check for Arc mainnet — supported domains, published contract addresses and the deposit-to-mint flow.",
 };
 
 const OFFICIAL_DETAILS = [
@@ -34,7 +36,9 @@ const OFFICIAL_DETAILS = [
   },
 ];
 
-export default function BridgePage() {
+export default async function BridgePage() {
+  const routes = await fetchGatewayRoutes();
+
   return (
     <div className="shell">
       <PageHead
@@ -44,15 +48,20 @@ export default function BridgePage() {
           <span className="badge pending" key="status">
             Coming soon
           </span>,
-          <span className="badge info" key="source">
-            Official Arc status
+          <span className="badge live" key="check">
+            <span className="dot" /> Live route check
           </span>,
         ]}
       >
-        Arc Early will only enable a production bridge after Arc publishes mainnet network parameters and an official
-        router exposes a supported route. No simulated quotes, wallet prompts or transaction buttons are shown before
-        that point.
+        This page checks Circle&apos;s production Gateway API on every load and reports whether Arc is a published
+        route yet, with the contract addresses Circle serves for every chain that is. Arc Early enables a production
+        bridge only once Arc appears in that list — no simulated quotes, wallet prompts or transaction buttons before
+        then.
       </PageHead>
+
+      <div style={{ marginBottom: 20 }}>
+        <GatewayRoutes initialData={routes} />
+      </div>
 
       <section className="bridge-coming card">
         <div className="bridge-coming-mark">
@@ -64,9 +73,10 @@ export default function BridgePage() {
           <div className="eyebrow">Status checked against official docs</div>
           <h2>Mainnet bridge is coming soon</h2>
           <p className="muted">
-            Arc&apos;s official deployment model currently lists Public Testnet as live and both Private Mainnet and
-            Public Mainnet as upcoming. Circle&apos;s CCTP matrix lists Arc Testnet—not Arc Mainnet—as a supported
-            domain. That means there is no official public mainnet router for this app to connect to yet.
+            Arc&apos;s official deployment model lists Public Testnet as live and both Private Mainnet and Public
+            Mainnet as upcoming, which matches what the Gateway API reports above. When those two sources disagree with
+            an endpoint someone hands you, trust these two. An unlisted RPC or Gateway contract has not been published
+            by Circle or Arc, however confidently it is shared.
           </p>
           <div className="pill-row">
             <a
@@ -90,9 +100,24 @@ export default function BridgePage() {
       </section>
 
       <div className="grid stats bridge-stats">
-        <Stat label="Bridge state" value="Coming soon" sub="waiting for official mainnet route" kind="pending" />
-        <Stat label="Mainnet parameters" value="Not public" sub="no confirmed chain ID or RPC" kind="pending" />
-        <Stat label="Live CCTP domain" value="26" sub="Arc Testnet only" kind="info" />
+        <Stat
+          label="Bridge state"
+          value={routes.arc.mainnetSupported ? "Route published" : "Coming soon"}
+          sub={routes.arc.mainnetSupported ? "Arc listed by Circle Gateway" : "waiting for official mainnet route"}
+          kind={routes.arc.mainnetSupported ? "good" : "pending"}
+        />
+        <Stat
+          label="Arc mainnet domain"
+          value={routes.arc.mainnet ? String(routes.arc.mainnet.domain) : "Not public"}
+          sub={routes.arc.mainnet ? "published by Circle" : "no Circle-published domain"}
+          kind={routes.arc.mainnet ? "good" : "pending"}
+        />
+        <Stat
+          label="Arc testnet domain"
+          value={routes.arc.testnet ? String(routes.arc.testnet.domain) : "—"}
+          sub={routes.arc.testnet ? "live on Gateway testnet" : "not reported"}
+          kind="info"
+        />
         <Stat label="Mainnet asset safety" value="Disabled" sub="no wallet transaction can be started" kind="good" />
       </div>
 
