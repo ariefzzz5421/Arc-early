@@ -10,7 +10,7 @@ export const metadata = {
     template: "%s · Arc Early",
   },
   description:
-    "Live RadarDex community-token data, fail-closed Arc mainnet bridge status, official ecosystem directory, testnet stream and sourced network updates.",
+    "Live RadarDex community-token data, a Circle CCTP V2 testnet bridge, official ecosystem directory, testnet stream and sourced network updates.",
 };
 
 export default function RootLayout({ children }) {

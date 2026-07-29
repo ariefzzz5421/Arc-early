@@ -22,9 +22,8 @@ export default function UpdatesPage() {
       </div>
 
       <Notice>
-        <b>Scam watch:</b> third-party sites advertising live Arc mainnet access or an &ldquo;Arc Bridge&rdquo; are
-        fraudulent. There is no mainnet to bridge to yet — verify every endpoint against docs.arc.io before connecting a
-        wallet.
+        <b>Scam watch:</b> Arc mainnet is not public. Only use testnet routes whose chain, token and contracts match
+        docs.arc.io and Circle documentation; reject any wallet prompt that claims to move real funds to Arc mainnet.
       </Notice>
 
       <div style={{ marginTop: 22, paddingBottom: 30 }}>

@@ -11,7 +11,7 @@ Not affiliated with Circle.
 | `/` | Dashboard — network status tiles, tool cards, top pairs, latest updates, ecosystem spotlight |
 | `/screener` | Token screener: sortable columns, category/liquidity filters, risk flags, sparklines |
 | `/memecoins` | Live community-token market data from the API used by RadarDex |
-| `/bridge` | Fail-closed Arc mainnet bridge status with official Arc and Circle sources |
+| `/bridge` | Circle CCTP V2 testnet bridge with wallet validation, estimates, Forwarder minting and recovery |
 | `/updates` | Mainnet watch — dated, source-linked Arc milestones with tag filters |
 | `/ecosystem` | Directory of projects building on Arc, with RadarDex featured |
 | `/network` | Chain IDs, RPC/explorer/faucet, add-to-wallet, mainnet status |
