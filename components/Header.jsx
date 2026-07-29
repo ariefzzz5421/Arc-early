@@ -9,6 +9,7 @@ const NAV = [
   { href: "/", label: "Dashboard" },
   { href: "/screener", label: "Screener" },
   { href: "/memecoins", label: "Memecoins" },
+  { href: "/wallets", label: "Wallets" },
   { href: "/bridge", label: "Bridge" },
   { href: "/updates", label: "Updates" },
   { href: "/ecosystem", label: "Ecosystem" },
